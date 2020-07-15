@@ -3,6 +3,7 @@ function Matching
 
 global BpodSystem
 global TaskParameters
+global nidaq
 
 %% Task parameters
 TaskParameters = BpodSystem.ProtocolSettings;
@@ -54,7 +55,7 @@ if isempty(fieldnames(TaskParameters))
     TaskParameters.GUI.rewardAmount = 30;
     TaskParameters.GUI.DrinkingTime=0.2;
     TaskParameters.GUI.DrinkingGrace=0.05;
-    TaskParameters.GUIPanels.Reward = {'rewardAmount','pLo','pHi','blockLenMin','blockLenMax','DrinkingTime','DrinkingGtace'};
+    TaskParameters.GUIPanels.Reward = {'rewardAmount','pLo','pHi','blockLenMin','blockLenMax','DrinkingTime','DrinkingGrace'};
     
     TaskParameters.GUI = orderfields(TaskParameters.GUI);
 
@@ -235,14 +236,20 @@ while RunSession
     
     if TaskParameters.GUI.Photometry
             
-        Alignments = {[],[],[],[]};
-        if TaskParameters.GUI.SidePokeIn && ~BpodSystem.Data.Custom.EarlyWithdrawal(iTrial)
-            Alignments{1} = 'wait_Sin';
+        Alignments = {[],[],[]};
+         %Choice
+
+        if ~isnan(BpodSystem.Data.Custom.ChoiceLeft(iTrial)) %Choice
+            Alignments{1} = 'start_'; %a little dangerous since generic state name start_ but so far (3/2019) only used for choice
         end
-        if TaskParameters.GUI.SidePokeLeave && ~BpodSystem.Data.Custom.EarlyWithdrawal(iTrial) && BpodSystem.Data.Custom.Rewarded(iTrial)==0
+
+        %Leave     
+        if ~isnan(BpodSystem.Data.Custom.ChoiceLeft(iTrial)) && BpodSystem.Data.Custom.Rewarded(iTrial)==0
             Alignments{2} = 'ITI';
         end
-        if TaskParameters.GUI.RewardDelivery && BpodSystem.Data.Custom.Rewarded(iTrial)==1 && BpodSystem.Data.Custom.RandomReward(iTrial)==0
+
+        %Reward
+        if  BpodSystem.Data.Custom.Rewarded(iTrial)==1
             Alignments{3} = 'water_';
         end
         
