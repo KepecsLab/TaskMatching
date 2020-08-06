@@ -14,7 +14,8 @@ if nargin < 2 % plot initialized (either beginning of session or post-hoc analys
     
     GUIHandles = struct();
     GUIHandles.Figs.MainFig = figure('Position', [200, 200, 1000, 400],'name','Outcome plot','numbertitle','off', 'MenuBar', 'none', 'Resize', 'off');
-    GUIHandles.Axes.OutcomePlot.MainHandle = axes('Position', [.06 .15 .91 .3]);
+    GUIHandles.Axes.OutcomePlot.MainHandle = axes('Position', [.06 .05 .91 .2]);
+    GUIHandles.Axes.ChoicePlot.MainHandle = axes('Position', [.06 .28 .91 .25]);
     GUIHandles.Axes.TrialRate.MainHandle = axes('Position', [[1 0]*[.06;.12] .6 .12 .3]);
     GUIHandles.Axes.StimDelay.MainHandle = axes('Position', [[2 1]*[.06;.12] .6 .12 .3]);
     GUIHandles.Axes.FeedbackDelay.MainHandle = axes('Position', [[3 2]*[.06;.12] .6 .12 .3]);
@@ -32,9 +33,18 @@ if nargin < 2 % plot initialized (either beginning of session or post-hoc analys
     GUIHandles.Axes.OutcomePlot.EarlyCout = line(-1,0, 'LineStyle','none','Marker','d','MarkerEdge','none','MarkerFace','b', 'MarkerSize',6);
     GUIHandles.Axes.OutcomePlot.EarlySout = line(-1,0, 'LineStyle','none','Marker','d','MarkerEdge','none','MarkerFace','b', 'MarkerSize',6);
     GUIHandles.Axes.OutcomePlot.CumRwd = text(1,1,'0mL','verticalalignment','bottom','horizontalalignment','center');
-    set(GUIHandles.Axes.OutcomePlot.MainHandle,'TickDir', 'out','YLim', [-1, 2],'XLim',[0,nTrialsToShow], 'YTick', [0 1],'YTickLabel', {'Right','Left'}, 'FontSize', 16);
+    set(GUIHandles.Axes.OutcomePlot.MainHandle,'TickDir', 'out','YLim', [-1, 2],'XLim',[0,nTrialsToShow], 'YTick', [0 1],'YTickLabel', {'Right','Left'}, 'FontSize', 12);
     xlabel(GUIHandles.Axes.OutcomePlot.MainHandle, 'Trial#', 'FontSize', 18);
     hold(GUIHandles.Axes.OutcomePlot.MainHandle, 'on');
+    
+    %% PlotChoice
+    axes(GUIHandles.Axes.ChoicePlot.MainHandle)
+    GUIHandles.Axes.ChoicePlot.pLeft = line(-1,1, 'LineStyle','--','Marker','none');
+    GUIHandles.Axes.ChoicePlot.LeftHi = line(-1,1, 'LineStyle','-','Marker','none', 'color', 'r', 'LineWidth',2);
+    GUIHandles.Axes.ChoicePlot.CurrentTrialCircle = line(-1,0.5, 'LineStyle','none','Marker','o','MarkerEdge','k','MarkerFace',[1 1 1], 'MarkerSize',6);
+    set(GUIHandles.Axes.ChoicePlot.MainHandle,'XTick', [],'YLim', [0, 1],'XLim',[0,nTrialsToShow], 'YTick', [0 0.5 1],'YTickLabel', {'0', 'pLeft', '1'}, 'FontSize', 12);
+    xlabel(GUIHandles.Axes.ChoicePlot.MainHandle, '', 'FontSize', 18);
+    hold(GUIHandles.Axes.ChoicePlot.MainHandle, 'on');
     %% Trial rate
     hold(GUIHandles.Axes.TrialRate.MainHandle,'on')
     GUIHandles.Axes.TrialRate.TrialRate = line(GUIHandles.Axes.TrialRate.MainHandle,[0 1],[0 1], 'LineStyle','-','Color','k','Visible','on','linewidth',3);
@@ -132,6 +142,32 @@ if nargin > 0
     set(GUIHandles.Axes.OutcomePlot.CumRwd, 'position', [iTrial+1 1], 'string', ...
         [num2str(sum(R(:))/1000) ' mL']);
     clear R C
+    
+    %% Plot pChoice left
+    [mn, ~] = rescaleX(GUIHandles.Axes.ChoicePlot.MainHandle,iTrial,nTrialsToShow); % recompute xlim
+    ChoiceLeft = Data.Custom.ChoiceLeft;
+    LeftHi=double(Data.Custom.LeftHi);
+    LeftHi(LeftHi==1)=TaskParameters.GUI.pHi/100;
+    LeftHi(LeftHi==0)=TaskParameters.GUI.pLo/100;
+    
+    if ~isempty(ChoiceLeft)
+    indxToPlot = mn:iTrial-1;
+    Xdata = indxToPlot;
+    Ydata = LeftHi(indxToPlot);
+    set(GUIHandles.Axes.ChoicePlot.LeftHi, 'xdata', Xdata, 'ydata', Ydata);
+   
+        if iTrial>10
+            smoothChoice = smooth(ChoiceLeft, 10, 'moving');
+            display(smoothChoice)
+            Ydata=smoothChoice(indxToPlot);
+
+            GUIHandles.Axes.ChoicePlot.pLeft
+            set(GUIHandles.Axes.ChoicePlot.pLeft, 'xdata', Xdata, 'ydata', Ydata);
+        end
+    end
+        
+        
+    
     
     %% Trial rate
     GUIHandles.Axes.TrialRate.TrialRate.XData = (Data.TrialStartTimestamp-min(Data.TrialStartTimestamp))/60;
