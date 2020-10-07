@@ -58,7 +58,12 @@ if isempty(fieldnames(TaskParameters))
     TaskParameters.GUIPanels.Reward = {'rewardAmount','pLo','pHi','blockLenMin','blockLenMax','DrinkingTime','DrinkingGrace'};
     
     TaskParameters.GUI = orderfields(TaskParameters.GUI);
-
+    
+    %% Video
+    TaskParameters.GUI.Wire1VideoTrigger = false;
+    TaskParameters.GUIMeta.Wire1VideoTrigger.Style = 'checkbox';
+    TaskParameters.GUIPanels.VideoGeneral = {'Wire1VideoTrigger'};
+    
     %% Photometry
     %photometry general
     TaskParameters.GUI.Photometry=0;
@@ -126,7 +131,7 @@ if isempty(fieldnames(TaskParameters))
     
     TaskParameters.GUITabs.General = {'General','StimDelay','SidePorts','Reward'};
     TaskParameters.GUITabs.Photometry = {'PhotometryRecording','PhotometryNidaq','PhotometryPlot','PhotometryRig'};
-    
+    TaskParameters.GUITabs.Video = {'VideoGeneral'};
         
     TaskParameters.GUI = orderfields(TaskParameters.GUI);
     TaskParameters.Figures.OutcomePlot.Position = [200, 200, 1000, 400];
@@ -173,7 +178,7 @@ for i = fieldnames(temp)'
     BpodSystem.GUIHandles.(i{1}) = temp.(i{1});
 end
 clear temp
-BpodNotebook('init');
+% BpodNotebook('init');
 
 %% NIDAQ Initialization and Plots
 if TaskParameters.GUI.Photometry

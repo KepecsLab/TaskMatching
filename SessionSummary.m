@@ -158,10 +158,10 @@ if nargin > 0
    
         if iTrial>10
             smoothChoice = smooth(ChoiceLeft, 10, 'moving');
-            display(smoothChoice)
+%             display(smoothChoice)
             Ydata=smoothChoice(indxToPlot);
 
-            GUIHandles.Axes.ChoicePlot.pLeft
+%             GUIHandles.Axes.ChoicePlot.pLeft
             set(GUIHandles.Axes.ChoicePlot.pLeft, 'xdata', Xdata, 'ydata', Ydata);
         end
     end

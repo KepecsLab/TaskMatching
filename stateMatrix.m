@@ -29,15 +29,23 @@ if BpodSystem.Data.Custom.Baited.Right(end)
 else
     RightPokeAction = 'unrewarded_Rin';
 end
+
+%Wire1 settings
+%no video default
+Wire1Out = {};
+if TaskParameters.GUI.Wire1VideoTrigger % video
+    Wire1Out =	{'WireState', 1};
+end
+
 %%
 sma = NewStateMatrix();
 sma = SetGlobalTimer(sma,1,TaskParameters.GUI.FeedbackDelay);
 
 
 sma = AddState(sma, 'Name', 'state_0',...
-    'Timer', 0,...
+    'Timer', 0.05,...
     'StateChangeConditions', {'Tup', 'PreITI'},...
-    'OutputActions', {});
+    'OutputActions', Wire1Out);
 
 sma = AddState(sma, 'Name', 'PreITI',...
     'Timer', TaskParameters.GUI.PreITI,...
