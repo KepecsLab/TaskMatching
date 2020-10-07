@@ -51,7 +51,8 @@ for i=1:3
     ylim auto;
     set(photosubplot(i),'XLim',[minx maxx],'XTick',xtickvalues,'YLim',[miny maxy]);
     rewplot(i)=plot([0 0],[-1,1],'-b');
-    meanplot(i)=plot([-5 5],[0 0],'-r');
+%     meanplot(i)=plot([-5 5],[0 0],'-r');
+    lastplot(i)=plot([-5 5],[0 0],'-r');
     hold off
 end
 
@@ -68,7 +69,8 @@ figData.lastsubplot=lastsubplot;
 figData.lastplotRaw=lastplotRaw;
 figData.lastplot470=lastplot470;
 figData.photosubplot=photosubplot;
-figData.meanplot=meanplot;
+% figData.meanplot=meanplot;
+figData.lastplot=lastplot;
 
     case 'update'
         
@@ -86,10 +88,12 @@ set(figData.photosubplot(plotidx), 'UserData', allData);
 meanData=mean(allData,2);
 
 curSubplot=figData.photosubplot(plotidx);
-set(figData.meanplot(plotidx), 'Xdata',newData470(:,1),'YData',meanData,'LineWidth',MeanThickness);
+% set(figData.meanplot(plotidx), 'Xdata',newData470(:,1),'YData',meanData,'LineWidth',MeanThickness);
+set(figData.lastplot(plotidx), 'Xdata',newData470(:,1),'YData',newData470(:,3),'LineWidth',MeanThickness);
 set(curSubplot,'NextPlot','add');
 plot(newData470(:,1),newData470(:,3),'-k','parent',curSubplot);
-uistack(figData.meanplot(plotidx), 'top');
+% uistack(figData.meanplot(plotidx), 'top');\
+uistack(figData.lastplot(plotidx), 'top');
 hold off
         
 %% Update GUI plot parameters
