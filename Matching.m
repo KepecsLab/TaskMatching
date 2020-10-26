@@ -179,7 +179,7 @@ for i = fieldnames(temp)'
     BpodSystem.GUIHandles.(i{1}) = temp.(i{1});
 end
 clear temp
-% BpodNotebook('init');
+BpodNotebook('init');
 
 %% NIDAQ Initialization and Plots
 if TaskParameters.GUI.Photometry
