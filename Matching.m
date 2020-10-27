@@ -173,12 +173,12 @@ if ~BpodSystem.EmulatorMode
 end
 
 %% Initialize plots
-temp = SessionSummary();
+temp = SessionSummary(); %will initialize BpodSystem.GUIHandles struct, so has to be called before adding additional figures
 for i = fieldnames(temp)'
     BpodSystem.GUIHandles.(i{1}) = temp.(i{1});
 end
 clear temp
-% BpodNotebook('init');
+BpodNotebook('init');
 
 %% NIDAQ Initialization and Plots
 if TaskParameters.GUI.Photometry
@@ -190,8 +190,10 @@ end
 Nidaq_photometry('ini');
 
 FigNidaq1=Online_NidaqPlot('ini','470');
+BpodSystem.GUIHandles.PhotometryPlot1 = FigNidaq1.fig;
 if TaskParameters.GUI.DbleFibers || TaskParameters.GUI.Isobestic405 || TaskParameters.GUI.RedChannel
     FigNidaq2=Online_NidaqPlot('ini','channel2');
+    BpodSystem.GUIHandles.PhotometryPlot2 = FigNidaq2.fig;
 end
 end
 
@@ -225,12 +227,14 @@ while RunSession
     %% Bpod save
     if ~isempty(fieldnames(RawEvents))
         BpodSystem.Data = AddTrialEvents(BpodSystem.Data,RawEvents);
+        BpodSystem.Data = BpodNotebook('sync', BpodSystem.Data); % Sync with Bpod notebook plugin        
         SaveBpodSessionData;
     end
     HandlePauseCondition; % Checks to see if the protocol is paused. If so, waits until user resumes.
     if BpodSystem.BeingUsed == 0
         return
     end
+    
     
     %% Update fields
     updateCustomDataFields(iTrial)
