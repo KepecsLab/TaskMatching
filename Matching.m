@@ -229,7 +229,8 @@ while RunSession
     %% Bpod save
     if ~isempty(fieldnames(RawEvents))
         BpodSystem.Data = AddTrialEvents(BpodSystem.Data,RawEvents);
-        BpodSystem.Data = BpodNotebook('sync', BpodSystem.Data); % Sync with Bpod notebook plugin        
+        BpodSystem.Data = BpodNotebook('sync', BpodSystem.Data); % Sync with Bpod notebook plugin
+        BpodSystem.Data.TrialSettings(iTrial) = TaskParameters;
         SaveBpodSessionData;
     end
     HandlePauseCondition; % Checks to see if the protocol is paused. If so, waits until user resumes.
