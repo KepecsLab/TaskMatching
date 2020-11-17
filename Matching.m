@@ -49,10 +49,10 @@ if isempty(fieldnames(TaskParameters))
     TaskParameters.GUIPanels.SidePorts = {'EarlySoutPenalty','FeedbackDelaySelection','FeedbackDelayMin','FeedbackDelayMax','FeedbackDelayTau','FeedbackDelay','Grace','CatchUnrwd'};
     
     % Reward
-    TaskParameters.GUI.pHi =  50; % 0-100% Higher reward probability
-    TaskParameters.GUI.pLo =  12; % 0-100% Lower reward probability
-    TaskParameters.GUI.blockLenMin = 50;
-    TaskParameters.GUI.blockLenMax = 100;
+    TaskParameters.GUI.pHi =  70; % 0-100% Higher reward probability
+    TaskParameters.GUI.pLo =  10; % 0-100% Lower reward probability
+    TaskParameters.GUI.blockLenMin = 100;
+    TaskParameters.GUI.blockLenMax = 150;
     TaskParameters.GUI.rewardAmount = 30;
     TaskParameters.GUI.DrinkingTime=5;
     TaskParameters.GUI.DrinkingGrace=0.5;
