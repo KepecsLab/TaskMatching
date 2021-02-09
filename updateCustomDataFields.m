@@ -9,7 +9,8 @@ if any(strcmp('Cin',statesThisTrial))
     if any(strcmp('stillSampling',statesThisTrial))
         BpodSystem.Data.Custom.StimDelay(iTrial) = BpodSystem.Data.RawEvents.Trial{iTrial}.States.stillSampling(1,2) - BpodSystem.Data.RawEvents.Trial{iTrial}.States.Cin(end,1);
     else
-        BpodSystem.Data.Custom.StimDelay(iTrial) = diff(BpodSystem.Data.RawEvents.Trial{iTrial}.States.Cin);
+        Cin_times = BpodSystem.Data.RawEvents.Trial{iTrial}.States.Cin; %can be multiple if LoopbackFix is on
+        BpodSystem.Data.Custom.StimDelay(iTrial) = Cin_times(end,2) - Cin_times(end,1); %only last Cin/out events
     end
 end
 %% Side ports

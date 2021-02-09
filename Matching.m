@@ -229,7 +229,7 @@ while RunSession
         end
         % save separately per trial (too large/slow to save entire history to disk)
         if BpodSystem.BeingUsed~=0 %only when bpod still active (due to how bpod stops a protocol this would be run again after the last trial)
-            if ~isfolder(BpodSystem.DataPath(1:end-4)), mkdir(BpodSystem.DataPath(1:end-4)), end
+            if ~isdir(BpodSystem.DataPath(1:end-4)), mkdir(BpodSystem.DataPath(1:end-4)), end
             fname = fullfile(BpodSystem.DataPath(1:end-4),['NidaqData',num2str(iTrial),'.mat']);
             save(fname,'NidaqData','Nidaq2Data')
         end
